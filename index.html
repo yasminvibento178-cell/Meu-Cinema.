@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meu Cinema</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topo">
+    <a class="logo" href="#inicio"><span>MEU</span> CINEMA</a>
+    <nav>
+      <a href="#catalogo">Catálogo</a>
+      <a href="#comprar">Comprar ingresso</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="inicio" class="hero">
+      <div>
+        <p class="eyebrow">A experiência começa na tela</p>
+        <h1>Grandes histórias.<br><em>Uma só sala.</em></h1>
+        <p class="chamada">Escolha seu filme, encontre o melhor horário e viva o cinema do seu jeito.</p>
+        <a class="botao claro" href="#catalogo">Ver filmes em cartaz ↓</a>
+      </div>
+      <div class="numero">
+        <b>06</b>
+        <span>filmes em<br>cartaz</span>
+      </div>
+    </section>
+
+    <section id="catalogo" class="catalogo">
+      <div class="titulo-secao">
+        <div>
+          <p class="eyebrow vinho">Programação</p>
+          <h2>Em cartaz</h2>
+        </div>
+        <span>{{ filmes|length }} filmes disponíveis</span>
+      </div>
+
+      <div class="grade">
+        {% for filme in filmes %}
+        <article class="filme">
+          <div class="poster poster-{{ loop.index }}">
+            <img src="img/{{ imagens[loop.index0] }}" alt="Capa do filme {{ filme.titulo }}">
+            <small>0{{ loop.index }}</small>
+            <b>MEU<br>CINEMA</b>
+            <h3>{{ filme.titulo }}</h3>
+          </div>
+          <div class="info">
+            <div class="meta">
+              <span>{{ filme.classificacao }}</span>
+              <span>{{ filme.duracao }}</span>
+            </div>
+            <div class="estrelas">
+              {{ "★" * filme.estrelas }}<i>{{ "☆" * (5 - filme.estrelas) }}</i>
+            </div>
+            <p>{{ filme.descricao }}</p>
+            <a class="comprar-link" href="#comprar">
+              Comprar ingresso <span>→</span>
+            </a>
+          </div>
+        </article>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section id="comprar" class="comprar">
+      <div class="texto-compra">
+        <p class="eyebrow vinho">Reserve seu lugar</p>
+        <h2>Seu filme,<br><em>seu momento.</em></h2>
+        <p>Preencha os dados ao lado para garantir seu ingresso.</p>
+      </div>
+
+      <form action="/comprar" method="post">
+        <label for="filme_id">Escolha o filme</label>
+        <select id="filme_id" name="filme_id" required>
+          <option value="">Selecione um filme</option>
+          {% for filme in filmes %}
+          <option value="{{ filme.id }}">
+            {{ filme.titulo }}
+          </option>
+          {% endfor %}
+        </select>
+
+        <div class="duas-colunas">
+          <div>
+            <label for="dia">Dia da sessão</label>
+            <select id="dia" name="dia" required>
+              <option value="">Escolha o dia</option>
+              {% for dia in dias %}
+              <option value="{{ dia }}">{{ dia }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div>
+            <label for="hora">Horário</label>
+            <select id="hora" name="hora" required>
+              <option value="">Escolha</option>
+              {% for hora in horarios %}
+              <option value="{{ hora }}">{{ hora }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <label for="nome">Nome completo</label>
+        <input id="nome" name="nome" type="text" placeholder="Como devemos chamar você?" required>
+
+        <label for="gmail">Gmail</label>
+        <input id="gmail" name="gmail" type="email" placeholder="voce@gmail.com" required>
+
+        <button class="botao vinho-botao" type="submit">Finalizar reserva →</button>
+
+        {% with mensagens = get_flashed_messages(with_categories=true) %}
+          {% for categoria, mensagem in mensagens %}
+          <p class="mensagem {{ categoria }}">{{ mensagem }}</p>
+          {% endfor %}
+        {% endwith %}
+      </form>
+    </section>
+  </main>
+
+  <footer>
+    <span class="logo"><span>MEU</span> CINEMA</span>
+    <span>Seu lugar para grandes histórias</span>
+  </footer>
+</body>
+</html>
